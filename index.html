@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ringvio – telefonsvar för småföretag</title>
+<meta name="description" content="Ringvio svarar när ni inte hinner. AI-receptionisten tar namn, nummer och ärende och skickar det till er mejl. För verkstäder, salonger, kliniker och butiker.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --concrete:#E6E9E7;
+    --paper:#FFFFFF;
+    --ink:#1C2430;
+    --ink-soft:#4A5563;
+    --rule:#C9CFCC;
+    --signal:#F2C230;
+    --plate-blue:#1F4FA3;
+    --display:"Barlow Condensed","Arial Narrow",sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--concrete);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.6}
+  a{color:var(--ink)}
+  a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--plate-blue);outline-offset:3px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+  header.top{padding:28px 0}
+  header.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .logo{font-family:var(--display);font-weight:700;font-size:1.75rem;letter-spacing:.01em;text-decoration:none}
+  .logo span{display:inline-block;width:.55em;height:.55em;background:var(--signal);margin-left:.15em;border-radius:2px}
+  .top a.mail{font-weight:500;text-decoration:none;border-bottom:2px solid var(--signal)}
+
+  .hero{padding:32px 0 88px}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(2.75rem,6vw,4.75rem);line-height:.98;margin:0 0 24px;letter-spacing:-.005em}
+  .lede{font-size:1.2rem;color:var(--ink-soft);max-width:34ch;margin:0 0 32px}
+  .btn{display:inline-block;background:var(--ink);color:#fff;text-decoration:none;font-weight:600;padding:14px 22px;border-radius:6px}
+  .btn:hover{background:#2C3848}
+  .note{font-size:.95rem;color:var(--ink-soft);margin-top:14px}
+
+  /* The ticket: what lands in the workshop's inbox */
+  .ticket{background:var(--paper);border-radius:4px;padding:28px 28px 24px;box-shadow:0 1px 0 var(--rule),0 18px 40px -24px rgba(28,36,48,.45);position:relative;transform:rotate(1.2deg)}
+  .ticket::before{content:"";position:absolute;left:0;right:0;top:0;height:8px;background:repeating-linear-gradient(90deg,var(--signal) 0 18px,var(--ink) 18px 36px);border-radius:4px 4px 0 0}
+  .ticket h2{font-family:var(--display);font-weight:600;font-size:1.5rem;margin:6px 0 2px}
+  .ticket .when{font-size:.9rem;color:var(--ink-soft);margin:0 0 20px}
+  .plate{display:inline-flex;align-items:stretch;border:2px solid var(--ink);border-radius:5px;overflow:hidden;font-family:var(--display);font-weight:600;font-size:2rem;line-height:1;margin-bottom:20px;background:#fff}
+  .plate .eu{background:var(--plate-blue);color:#fff;font-size:.7rem;font-family:var(--body);font-weight:600;padding:6px 6px 4px;display:flex;align-items:flex-end}
+  .plate .num{padding:8px 14px 6px;letter-spacing:.06em}
+  dl.fields{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 18px}
+  dl.fields dt{color:var(--ink-soft);font-size:.92rem}
+  dl.fields dd{margin:0;font-weight:500}
+  .ticket .foot{margin-top:20px;padding-top:14px;border-top:1px dashed var(--rule);font-size:.9rem;color:var(--ink-soft)}
+  .ticket .tag{display:inline-block;background:var(--concrete);border-radius:4px;padding:6px 12px;font-weight:600;margin-bottom:20px}
+  .switch{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+  .switch button{font:inherit;font-size:.95rem;font-weight:500;color:var(--ink);background:transparent;border:1.5px solid var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+  .switch button[aria-pressed="true"]{background:var(--ink);color:#fff}
+  .switch-label{font-size:.95rem;color:var(--ink-soft);margin:0 0 10px}
+  .ticket-body{transition:opacity .2s}
+  .ticket-body.swap{opacity:0}
+  @media (prefers-reduced-motion:reduce){.ticket-body{transition:none}}
+
+  @media (prefers-reduced-motion:no-preference){
+    .ticket{animation:arrive .7s cubic-bezier(.2,.8,.2,1) .15s both}
+    @keyframes arrive{from{opacity:0;transform:translateY(24px) rotate(3deg)}to{opacity:1;transform:translateY(0) rotate(1.2deg)}}
+  }
+
+  section{padding:80px 0}
+  section.paper{background:var(--paper)}
+  h2.sec{font-family:var(--display);font-weight:700;font-size:clamp(2rem,4vw,2.75rem);line-height:1.05;margin:0 0 12px}
+  .sec-lede{color:var(--ink-soft);max-width:60ch;margin:0 0 40px}
+
+  ol.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:32px;counter-reset:s}
+  ol.steps li{counter-increment:s;border-top:3px solid var(--ink);padding-top:16px}
+  ol.steps li::before{content:counter(s);font-family:var(--display);font-weight:700;font-size:2.25rem;line-height:1;display:block;margin-bottom:10px}
+  ol.steps h3{font-size:1.05rem;margin:0 0 6px}
+  ol.steps p{margin:0;color:var(--ink-soft);font-size:.98rem}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+  ul.plain{margin:0;padding:0;list-style:none}
+  ul.plain li{padding:14px 0;border-bottom:1px solid var(--rule)}
+  ul.plain li:first-child{border-top:1px solid var(--rule)}
+  ul.plain strong{display:block}
+  ul.plain span{color:var(--ink-soft);font-size:.98rem}
+
+  .pilot{background:var(--ink);color:#fff;border-radius:8px;padding:40px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center}
+  .pilot h2{font-family:var(--display);font-weight:700;font-size:clamp(2rem,4vw,2.75rem);margin:0 0 10px;line-height:1.05}
+  .pilot p{margin:0;color:#C8D0DA;max-width:52ch}
+  .price{font-family:var(--display);font-weight:700;font-size:4rem;line-height:1;color:var(--signal);text-align:right}
+  .price small{display:block;font-family:var(--body);font-weight:400;font-size:1rem;color:#C8D0DA;margin-top:6px}
+  .pilot .btn{background:var(--signal);color:var(--ink);margin-top:24px}
+  .pilot .btn:hover{background:#FFD24D}
+
+  details{border-bottom:1px solid var(--rule);padding:16px 0}
+  details:first-of-type{border-top:1px solid var(--rule)}
+  summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:var(--display);font-size:1.5rem;line-height:1}
+  details[open] summary::after{content:"–"}
+  details p{margin:10px 0 0;color:var(--ink-soft);max-width:64ch}
+
+  footer{padding:48px 0 64px;font-size:.95rem;color:var(--ink-soft)}
+  footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+
+  @media (max-width:860px){
+    .hero .wrap,.two{grid-template-columns:1fr}
+    .hero{padding-bottom:64px}
+    .ticket{transform:none;max-width:460px}
+    ol.steps{grid-template-columns:1fr 1fr}
+    .pilot{grid-template-columns:1fr;padding:32px 24px}
+    .price{text-align:left}
+  }
+  @media (max-width:520px){
+    .wrap{padding:0 16px}
+    ol.steps{grid-template-columns:1fr}
+    section{padding:56px 0}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/">Ringvio<span aria-hidden="true"></span></a>
+    <a class="mail" href="mailto:david.eriksson@ringvio.se">Mejla oss</a>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <h1>Telefonen ringer. Du är mitt i ett jobb.</h1>
+        <p class="lede">Ringvio svarar när ni inte hinner, tar uppgifterna och skickar ärendet till er mejl. Ni ringer upp när ni har händerna lediga.</p>
+        <a class="btn" href="mailto:david.eriksson@ringvio.se?subject=Pilot%20med%20Ringvio">Anmäl intresse för piloten</a>
+        <p class="note">För verkstäder, salonger, kliniker och butiker i Mälardalen.</p>
+      </div>
+
+      <div>
+        <p class="switch-label" id="switch-label">Se ett ärende för</p>
+        <div class="switch" role="group" aria-labelledby="switch-label">
+          <button type="button" data-kind="verkstad" aria-pressed="true">Verkstad</button>
+          <button type="button" data-kind="salong" aria-pressed="false">Salong</button>
+          <button type="button" data-kind="fysio" aria-pressed="false">Fysioterapeut</button>
+          <button type="button" data-kind="butik" aria-pressed="false">Butik</button>
+        </div>
+        <article class="ticket" aria-label="Exempel på ett ärende från Ringvio" aria-live="polite">
+          <div class="ticket-body" id="ticket-body">
+            <h2>Nytt ärende från telefonen</h2>
+            <p class="when">Tisdag 07:42, samtalet kom medan verkstaden var upptagen</p>
+            <div class="plate" aria-label="Registreringsnummer ABC 123">
+              <span class="eu" aria-hidden="true">S</span>
+              <span class="num">ABC 123</span>
+            </div>
+            <dl class="fields">
+              <dt>Namn</dt><dd>Anna Lindqvist</dd>
+              <dt>Telefon</dt><dd>070-123 45 67</dd>
+              <dt>Ärende</dt><dd>Bromsarna gnisslar fram, vill boka tid den här veckan.</dd>
+            </dl>
+          </div>
+          <p class="foot">Uppgifterna är upplästa och bekräftade av kunden.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <section class="paper" id="sa-funkar-det">
+    <div class="wrap">
+      <h2 class="sec">Så går ett samtal till</h2>
+      <p class="sec-lede">Ni behåller ert nummer. Samtal som ni inte hinner ta går vidare till Ringvio.</p>
+      <ol class="steps">
+        <li><h3>Kunden ringer</h3><p>Ni svarar inte inom några signaler, eller så har ni stängt.</p></li>
+        <li><h3>Ringvio svarar</h3><p>Assistenten säger att den är en AI och frågar vad kunden behöver hjälp med.</p></li>
+        <li><h3>Uppgifterna kontrolleras</h3><p>Namn, telefon och ärende läses tillbaka så att kunden kan rätta. Frågorna anpassas efter er bransch.</p></li>
+        <li><h3>Ärendet landar i mejlen</h3><p>Ni bestämmer själva nästa steg och ringer upp när det passar.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap two">
+      <div>
+        <h2 class="sec">Gjort för företag som inte har en reception</h2>
+        <p class="sec-lede">När händerna är upptagna av en bil, en kund i stolen eller en patient på britsen går telefonen obesvarad. Den som inte kommer fram ringer ofta någon annan. Ringvio ser till att samtalet blir ett ärende i stället.</p>
+      </div>
+      <ul class="plain">
+        <li><strong>Inga nya system att lära sig</strong><span>Ärendena kommer som vanliga mejl.</span></li>
+        <li><strong>Vi sätter upp allt åt er</strong><span>Frågor, hälsning och öppettider anpassas efter er verksamhet.</span></li>
+        <li><strong>Ärligt mot kunden</strong><span>Assistenten säger alltid att den är en AI.</span></li>
+        <li><strong>Kvällar och helger också</strong><span>Samtal utanför telefontid blir ärenden till nästa morgon.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="pilot">
+    <div class="wrap">
+      <div class="pilot">
+        <div>
+          <h2>Var med i piloten</h2>
+          <p>Vi söker några företag som vill testa Ringvio och berätta vad som fungerar. Ingen bindningstid, och ni kan sluta när ni vill.</p>
+          <a class="btn" href="mailto:david.eriksson@ringvio.se?subject=Pilot%20med%20Ringvio">Anmäl intresse</a>
+        </div>
+        <p class="price">299 kr<small>per månad under piloten</small></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="paper" id="fragor">
+    <div class="wrap">
+      <h2 class="sec">Vanliga frågor</h2>
+      <div style="max-width:760px">
+        <details>
+          <summary>Behöver vi byta telefonnummer?</summary>
+          <p>Nej. Ni behåller ert nummer och kopplar obesvarade samtal vidare till Ringvio. Vi hjälper er att ställa in det.</p>
+        </details>
+        <details>
+          <summary>Bokar Ringvio tider åt oss?</summary>
+          <p>Nej, inte i piloten. Ringvio tar emot ärendet och skickar det till er. Ni bestämmer tid och pris själva när ni ringer upp.</p>
+        </details>
+        <details>
+          <summary>Vet kunden att det är en AI?</summary>
+          <p>Ja. Assistenten säger det i början av varje samtal.</p>
+        </details>
+        <details>
+          <summary>Vad händer med kundens uppgifter?</summary>
+          <p>Uppgifterna används bara för att skicka ärendet till er. Vi skriver ett personuppgiftsbiträdesavtal med varje verkstad.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Ringvio, telefonsvar för småföretag</span>
+    <a href="mailto:david.eriksson@ringvio.se">david.eriksson@ringvio.se</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var examples = {
+    verkstad: {
+      when: "Tisdag 07:42, samtalet kom medan verkstaden var upptagen",
+      plate: "ABC 123",
+      fields: [["Namn","Anna Lindqvist"],["Telefon","070-123 45 67"],["Ärende","Bromsarna gnisslar fram, vill boka tid den här veckan."]]
+    },
+    salong: {
+      when: "Lördag 11:15, frisören var mitt i en klippning",
+      tag: "Klippning och färg",
+      fields: [["Namn","Sara Ekström"],["Telefon","073-456 78 90"],["Ärende","Vill boka klippning och slingor, helst en torsdag efter 16."]]
+    },
+    fysio: {
+      when: "Måndag 09:05, fysioterapeuten hade en patient",
+      tag: "Ny patient",
+      fields: [["Namn","Johan Berg"],["Telefon","076-234 56 78"],["Ärende","Ont i axeln sedan två veckor, undrar om det finns en tid snart."]]
+    },
+    butik: {
+      when: "Onsdag 17:48, kassan hade kö",
+      tag: "Fråga om vara",
+      fields: [["Namn","Leila Haddad"],["Telefon","070-987 65 43"],["Ärende","Undrar om ni har vinterjackan i storlek M och kan lägga undan den."]]
+    }
+  };
+  var body = document.getElementById("ticket-body");
+  var buttons = document.querySelectorAll(".switch button");
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  function render(kind){
+    var e = examples[kind];
+    var head = e.plate
+      ? '<div class="plate" aria-label="Registreringsnummer ' + esc(e.plate) + '"><span class="eu" aria-hidden="true">S</span><span class="num">' + esc(e.plate) + '</span></div>'
+      : '<p class="tag">' + esc(e.tag) + '</p>';
+    var dl = e.fields.map(function(f){ return "<dt>" + esc(f[0]) + "</dt><dd>" + esc(f[1]) + "</dd>"; }).join("");
+    body.innerHTML = '<h2>Nytt ärende från telefonen</h2><p class="when">' + esc(e.when) + '</p>' + head + '<dl class="fields">' + dl + '</dl>';
+  }
+  buttons.forEach(function(b){
+    b.addEventListener("click", function(){
+      buttons.forEach(function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      body.classList.add("swap");
+      setTimeout(function(){ render(b.dataset.kind); body.classList.remove("swap"); }, 200);
+    });
+  });
+})();
+</script>
+</body>
+</html>
